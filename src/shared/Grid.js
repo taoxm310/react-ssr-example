@@ -5,7 +5,7 @@ class Grid extends Component {
     const repos = this.props.data
     return (
       <ul style={{display:'flex', flexWrap: 'wrap'}}>
-        {repos.map(({name,owner,stargazers_count, html_url}) => (
+        {repos && repos.map(({name,owner,stargazers_count, html_url}) => (
           <li key={name} style={{margin:30}}>
             <ul>
               <li><a href={html_url}>{name}</a></li>
