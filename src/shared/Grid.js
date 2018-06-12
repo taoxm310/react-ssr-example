@@ -13,10 +13,35 @@ class Grid extends Component {
 
     this.state = {
       repos,
+      loading:repos ? false: true
+    }
+  }
+  fetchRepos (lang) {
+    this.setState(() => ({
+      loading:true
+    }))
+
+    this.props.fetchInitialData(lang)
+      .then((repos) => this.setState(() => ({
+          repos,
+          loading:false
+        })))
+  }
+  componentDidMount() {
+    if (! this.state.repos) {
+      this.fetchRepos(this.props.match.params.id)
+    }
+  }
+  componentDidUpdate (prevProps, prevState) {
+    if (prevProps.match.params.id !== this.props.match.params.id) {
+      this.fetchRepos(this.props.match.params.id)
     }
   }
   render () {
-    const { repos } = this.state
+    const { repos, loading } = this.state
+    if (loading) {
+      return <p>LOADING...</p>
+    }
     return (
       <ul style={{display:'flex', flexWrap: 'wrap'}}>
         { repos.map(({name,owner,stargazers_count, html_url}) => (
