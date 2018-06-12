@@ -4,7 +4,7 @@ import { renderToString } from 'react-dom/server';
 import App from '../shared/App';
 import React from 'react';
 import serialize from 'serialize-javascript';
-import { matchPath } from 'react-router-dom';
+import { StaticRouter, matchPath } from 'react-router-dom';
 import routes from '../shared/routes';
 
 const app = express()
@@ -18,8 +18,13 @@ app.get("*", (req,res,next) =>{
   const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(req.path) : Promise.resolve();
 
   promise.then((data) => {
+      const context = {
+        data
+      }
       const markup = renderToString(
+        <StaticRouter location={req.url} context={context}>
           <App data={data} />
+        </StaticRouter>
       )
 
       res.send(`
